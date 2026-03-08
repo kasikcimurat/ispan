@@ -2,8 +2,8 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ana Sayfa</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>İspan</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -17,16 +17,23 @@
     --muted: #666;
   }
 
+  html, body {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
   body {
     background: var(--bg);
     color: var(--text);
     font-family: 'Outfit', sans-serif;
-    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
 
   /* Animated background */
@@ -35,8 +42,8 @@
     position: fixed;
     inset: 0;
     background: 
-      radial-gradient(ellipse 60% 50% at 20% 30%, rgba(255,60,95,0.12) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 40% at 80% 70%, rgba(255,140,66,0.08) 0%, transparent 60%);
+      radial-gradient(ellipse 80% 50% at 20% 20%, rgba(255,60,95,0.14) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 80%, rgba(255,140,66,0.1) 0%, transparent 60%);
     pointer-events: none;
     z-index: 0;
   }
@@ -56,56 +63,65 @@
     position: relative;
     z-index: 1;
     text-align: center;
-    padding: 2rem;
+    padding: 2rem 1.5rem 6rem;
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .logo {
     font-family: 'Bebas Neue', cursive;
-    font-size: clamp(4rem, 12vw, 8rem);
+    font-size: clamp(5rem, 22vw, 8rem);
     letter-spacing: 0.06em;
     line-height: 1;
     background: linear-gradient(135deg, #ff3c5f 0%, #ff8c42 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: fadeDown 0.8s ease both;
+    animation: fadeDown 0.7s ease both;
     margin-bottom: 0.3rem;
   }
 
   .tagline {
-    font-size: 0.95rem;
+    font-size: 0.75rem;
     color: var(--muted);
-    letter-spacing: 0.25em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    margin-bottom: 3rem;
-    animation: fadeDown 0.8s 0.15s ease both;
+    margin-bottom: 2.5rem;
+    animation: fadeDown 0.7s 0.12s ease both;
   }
 
   .nav-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1rem;
-    max-width: 700px;
-    margin: 0 auto 3rem;
-    animation: fadeUp 0.8s 0.3s ease both;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    width: 100%;
+    margin: 0 auto 2.5rem;
+    animation: fadeUp 0.7s 0.25s ease both;
   }
 
   .nav-btn {
-    display: block;
-    padding: 1.1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 1.4rem;
     background: var(--surface);
     border: 1px solid rgba(255,255,255,0.07);
     color: var(--text);
     font-family: 'Outfit', sans-serif;
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-weight: 600;
     text-decoration: none;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    transition: border-color 0.3s, transform 0.2s;
-    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    transition: border-color 0.25s, transform 0.15s, background 0.25s;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
   }
 
   .nav-btn::before {
@@ -114,40 +130,70 @@
     inset: 0;
     background: linear-gradient(135deg, rgba(255,60,95,0.15), rgba(255,140,66,0.1));
     opacity: 0;
-    transition: opacity 0.3s;
+    transition: opacity 0.25s;
   }
 
-  .nav-btn::after {
-    content: attr(data-label);
-    position: absolute;
-    bottom: 6px;
-    right: 10px;
-    font-size: 0.6rem;
+  .nav-btn .label-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.1rem;
+    flex: 1;
+  }
+
+  .nav-btn .page-tag {
+    font-size: 0.58rem;
     color: var(--accent);
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    opacity: 0.6;
+    opacity: 0.7;
+    font-weight: 400;
   }
 
-  .nav-btn:hover {
-    border-color: rgba(255,60,95,0.5);
-    transform: translateY(-3px);
+  .nav-btn .arrow {
+    margin-left: auto;
+    color: var(--accent);
+    opacity: 0.5;
+    font-size: 1.1rem;
+    transition: opacity 0.2s, transform 0.2s;
+    flex-shrink: 0;
   }
 
-  .nav-btn:hover::before { opacity: 1; }
+  .nav-btn:active {
+    border-color: rgba(255,60,95,0.6);
+    transform: scale(0.98);
+    background: #1a1a24;
+  }
+
+  .nav-btn:active::before { opacity: 1; }
+  .nav-btn:active .arrow { opacity: 1; transform: translateX(4px); }
+
+  /* Touch ripple */
+  .nav-btn .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,60,95,0.25);
+    transform: scale(0);
+    animation: ripple-anim 0.5s linear;
+    pointer-events: none;
+  }
+
+  @keyframes ripple-anim {
+    to { transform: scale(4); opacity: 0; }
+  }
 
   .nav-btn .icon {
-    display: block;
-    font-size: 1.6rem;
-    margin-bottom: 0.4rem;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 6px rgba(255,60,95,0.3));
   }
 
   .divider {
-    width: 60px;
+    width: 50px;
     height: 2px;
     background: linear-gradient(90deg, var(--accent), var(--accent2));
-    margin: 0 auto 2rem;
-    animation: fadeUp 0.8s 0.45s ease both;
+    margin: 0 auto 0;
+    animation: fadeUp 0.7s 0.4s ease both;
   }
 
   footer {
@@ -155,47 +201,45 @@
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 1;
-    padding: 1rem 2rem;
+    z-index: 10;
+    padding: 1rem 1.5rem calc(1rem + env(safe-area-inset-bottom));
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    background: linear-gradient(to top, rgba(10,10,15,0.95), transparent);
-    animation: fadeUp 0.8s 0.6s ease both;
+    background: linear-gradient(to top, rgba(10,10,15,1) 0%, rgba(10,10,15,0.85) 70%, transparent 100%);
+    animation: fadeUp 0.7s 0.5s ease both;
   }
 
-  .tiktok-link {
+  .contact-link {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.45rem;
     color: var(--muted);
     text-decoration: none;
-    font-size: 0.85rem;
-    letter-spacing: 0.05em;
-    transition: color 0.3s;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    transition: color 0.25s;
   }
 
-  .tiktok-link:hover { color: var(--text); }
+  .contact-link:active { color: var(--text); }
 
-  .tiktok-icon {
-    width: 18px;
-    height: 18px;
-    fill: currentColor;
+  .mail-icon {
+    font-size: 1rem;
+    opacity: 0.7;
   }
 
-  .tiktok-handle {
+  .contact-handle {
     color: var(--accent);
     font-weight: 600;
   }
 
   @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-20px); }
+    from { opacity: 0; transform: translateY(-16px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
@@ -215,22 +259,26 @@
     90% { opacity: 0.15; }
     to   { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
   }
+
+  /* Safe area for iPhone notch */
+  .container {
+    padding-top: max(2rem, env(safe-area-inset-top) + 1rem);
+  }
 </style>
 </head>
 <body>
 
-<!-- Particles -->
 <script>
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 10; i++) {
     const p = document.createElement('div');
     p.className = 'particle';
-    const size = Math.random() * 6 + 2;
+    const size = Math.random() * 5 + 2;
     p.style.cssText = `
       width:${size}px; height:${size}px;
       left:${Math.random()*100}%;
       background:${Math.random()>0.5?'#ff3c5f':'#ff8c42'};
-      animation-duration:${8+Math.random()*12}s;
-      animation-delay:${-Math.random()*15}s;
+      animation-duration:${10+Math.random()*14}s;
+      animation-delay:${-Math.random()*18}s;
     `;
     document.body.appendChild(p);
   }
@@ -241,36 +289,60 @@
   <p class="tagline">içerikler &bull; kelimeler &bull; cümleler</p>
 
   <div class="nav-grid">
-    <a href="yazı.html" class="nav-btn" data-label="sayfa">
+    <a href="yazı.html" class="nav-btn">
       <span class="icon">✍️</span>
-      Yazı
+      <span class="label-wrap">
+        <span>Yazı</span>
+        <span class="page-tag">sayfa</span>
+      </span>
+      <span class="arrow">›</span>
     </a>
-    <a href="cümleşık.html" class="nav-btn" data-label="sayfa">
+
+    <a href="cümleşık.html" class="nav-btn">
       <span class="icon">💬</span>
-      Cümle
+      <span class="label-wrap">
+        <span>Cümle</span>
+        <span class="page-tag">sayfa</span>
+      </span>
+      <span class="arrow">›</span>
     </a>
-   </br>
-   	  <a href="ingilizce.html" class="nav-btn" data-label="sayfa">
-      <span class="icon">💬</span>
-      İngilizce
+
+    <a href="ingilizce.html" class="nav-btn">
+      <span class="icon">🌍</span>
+      <span class="label-wrap">
+        <span>İngilizce</span>
+        <span class="page-tag">sayfa</span>
+      </span>
+      <span class="arrow">›</span>
     </a>
-   
   </div>
 
   <div class="divider"></div>
 </div>
 
 <footer>
-  
-  
-      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.89a8.26 8.26 0 004.84 1.55V7.01a4.85 4.85 0 01-1.07-.32z"/>
-    </svg>
-    İletişim:&nbsp;<span class="tiktok-handle">kasikcimurat@icloud.com</span>
+  <a href="mailto:kasikcimurat@icloud.com" class="contact-link">
+    <span class="mail-icon">✉️</span>
+    İletişim:&nbsp;<span class="contact-handle">kasikcimurat@icloud.com</span>
   </a>
 </footer>
 
+<script>
+  // Touch ripple effect
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('touchstart', function(e) {
+      const rect = btn.getBoundingClientRect();
+      const touch = e.touches[0];
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple';
+      ripple.style.cssText = `left:${x}px; top:${y}px; width:${rect.width}px; height:${rect.width}px; margin-left:-${rect.width/2}px; margin-top:-${rect.width/2}px;`;
+      btn.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    }, { passive: true });
+  });
+</script>
+
 </body>
-
 </html>
-
-
