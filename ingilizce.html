@@ -166,6 +166,33 @@ body {
   box-shadow: 0 0 18px rgba(30,80,255,0.2);
 }
 
+.level-btn.fiil {
+  background: rgba(100, 20, 180, 0.12);
+  border-color: rgba(160,60,255,0.2);
+  color: rgba(200,130,255,0.7);
+}
+.level-btn.fiil.active, .level-btn.fiil:hover {
+  background: rgba(100, 20, 180, 0.22);
+  border-color: #b060ff;
+  color: #cc90ff;
+  box-shadow: 0 0 18px rgba(140,40,255,0.2);
+}
+
+.lvl-badge.fiil {
+  background: rgba(140,40,255,0.12);
+  border: 1px solid rgba(180,90,255,0.4);
+  color: #cc90ff;
+}
+
+.question-box.level-fiil {
+  background: linear-gradient(145deg, var(--card2), rgba(140,40,255,0.06));
+  border-color: rgba(180,90,255,0.35);
+}
+
+.question-box.level-fiil::after {
+  content: 'V2';
+}
+
 /* ── Stats ── */
 .stats {
   display: flex; gap: 10px;
@@ -525,6 +552,7 @@ body {
 <div class="level-selector">
   <button class="level-btn a active" id="btnA" onclick="setLevel('a')">⭐ A Seviyesi</button>
   <button class="level-btn b1" id="btnB1" onclick="setLevel('b1')">🔥 B Seviyesi</button>
+  <button class="level-btn fiil" id="btnFiil" onclick="setLevel('fiil')">⚡ Fiiller</button>
 </div>
 
 <!-- Stats -->
@@ -579,6 +607,7 @@ body {
 
 <script src="aingilizce.js"></script>
 <script src="bingilizce.js"></script>
+<script src="fiiller.js"></script>
 
 <script>
 let direction = 'en_to_tr';
@@ -591,8 +620,10 @@ let answered = false;
 function getPool() {
   if (activeLevel === 'a') {
     return typeof AseviyeCumleler !== 'undefined' ? AseviyeCumleler : [];
-  } else {
+  } else if (activeLevel === 'b1') {
     return typeof BseviyeCumleler !== 'undefined' ? BseviyeCumleler : [];
+  } else {
+    return typeof FiilCekimleri !== 'undefined' ? FiilCekimleri : [];
   }
 }
 
@@ -600,12 +631,19 @@ function setLevel(lvl) {
   activeLevel = lvl;
   document.getElementById('btnA').classList.toggle('active', lvl === 'a');
   document.getElementById('btnB1').classList.toggle('active', lvl === 'b1');
+  document.getElementById('btnFiil').classList.toggle('active', lvl === 'fiil');
 
   const badge = document.getElementById('levelBadge');
   badge.className = 'lvl-badge ' + lvl;
-  badge.textContent = lvl === 'a' ? 'A Seviyesi' : 'B Seviyesi';
+  badge.textContent = lvl === 'a' ? 'A Seviyesi' : lvl === 'b1' ? 'B Seviyesi' : '⚡ Fiil Çekimi';
 
-  document.getElementById('questionBox').classList.toggle('level-b1', lvl === 'b1');
+  const qbox = document.getElementById('questionBox');
+  qbox.classList.toggle('level-b1', lvl === 'b1');
+  qbox.classList.toggle('level-fiil', lvl === 'fiil');
+
+  // Fiil modunda yön değiştir butonunu gizle
+  document.querySelector('.toggle-btn').style.display = lvl === 'fiil' ? 'none' : '';
+
   yeniSoru();
 }
 
@@ -649,11 +687,38 @@ function yeniSoru() {
 
   if (!pool || pool.length < 4) {
     document.getElementById('questionWord').textContent = '—';
-    document.getElementById('questionLabel').textContent = 'Cümle bulunamadı';
+    document.getElementById('questionLabel').textContent = 'Soru bulunamadı';
     container.innerHTML = '<div class="no-data">JS dosyası eksik ya da boş.</div>';
     return;
   }
 
+  // ── Fiil modu ──
+  if (activeLevel === 'fiil') {
+    aktifCumle = pool[Math.floor(Math.random() * pool.length)];
+    document.getElementById('directionText').textContent = 'Fiil Çekimi';
+    document.getElementById('questionLabel').textContent = 'Doğru cevabı seçin';
+    document.getElementById('questionWord').textContent = aktifCumle.soru;
+
+    // 3 yanlış + 1 doğru
+    const secenekler = shuffle([aktifCumle.dogru, ...aktifCumle.yanlis]);
+    const letters = ['A','B','C','D'];
+    container.innerHTML = '';
+
+    secenekler.forEach((val, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      const s1 = document.createElement('span');
+      s1.className = 'opt-letter'; s1.textContent = letters[i];
+      const s2 = document.createElement('span');
+      s2.className = 'opt-text'; s2.textContent = val;
+      btn.appendChild(s1); btn.appendChild(s2);
+      btn.onclick = () => secimFiil(btn, val === aktifCumle.dogru);
+      container.appendChild(btn);
+    });
+    return;
+  }
+
+  // ── Cümle modu (A / B seviyesi) ──
   aktifCumle = pool[Math.floor(Math.random() * pool.length)];
 
   const isEnToTr = direction === 'en_to_tr';
@@ -681,6 +746,34 @@ function yeniSoru() {
     btn.onclick = () => secim(btn, k === aktifCumle, isEnToTr);
     container.appendChild(btn);
   });
+}
+
+function secimFiil(btn, isCorrect) {
+  if (answered) return;
+  answered = true;
+  toplam++;
+  document.getElementById('toplamSay').textContent = toplam;
+  document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+
+  if (isCorrect) {
+    dogru++; streak++;
+    document.getElementById('dogruSay').textContent = dogru;
+    btn.classList.add('correct');
+    showFeedback('✅');
+  } else {
+    yanlis++; streak = 0;
+    document.getElementById('yanlisSay').textContent = yanlis;
+    btn.classList.add('wrong');
+    showFeedback('❌');
+    document.querySelectorAll('.option-btn').forEach(b => {
+      if (b.querySelector('.opt-text').textContent === aktifCumle.dogru) b.classList.add('correct');
+    });
+    document.getElementById('questionHint').textContent = '✦ ' + aktifCumle.ipucu;
+  }
+
+  updateProgress();
+  updateStreak();
+  setTimeout(yeniSoru, 900);
 }
 
 function secim(btn, isCorrect, isEnToTr) {
