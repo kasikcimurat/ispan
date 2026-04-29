@@ -166,21 +166,5 @@
 
 </div>
 
-<script>
-window.onload = function () {
-  let isim = prompt("Adını gir:");
-
-  if (!isim) return;
-
-  fetch("log.php", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body: "isim=" + encodeURIComponent(isim)
-  });
-};
-</script>
-
 </body>
 </html>
