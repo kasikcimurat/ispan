@@ -597,6 +597,120 @@ body {
   .card { padding: 20px 14px 18px; }
   .option-btn { font-size:13.5px; }
 }
+
+/* ── Tarih Alt Kategori Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 999;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.modal-overlay.open {
+  opacity: 1; pointer-events: all;
+}
+.modal-box {
+  background: var(--card);
+  border: 1px solid rgba(40,210,120,0.3);
+  border-radius: 26px;
+  padding: 28px 24px;
+  max-width: 400px; width: calc(100% - 32px);
+  position: relative;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 40px rgba(40,210,120,0.08);
+  transform: translateY(18px) scale(0.97);
+  transition: transform 0.28s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+.modal-overlay.open .modal-box {
+  transform: translateY(0) scale(1);
+}
+.modal-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px; font-weight: 800;
+  color: #5debb0;
+  text-align: center;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+.modal-sub {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 22px;
+  text-transform: uppercase;
+}
+.modal-cats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.modal-cat-btn {
+  display: flex; align-items: center; gap: 14px;
+  background: rgba(20,180,100,0.07);
+  border: 2px solid rgba(40,210,120,0.18);
+  border-radius: 16px;
+  padding: 15px 18px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-align: left;
+  width: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+.modal-cat-btn:hover, .modal-cat-btn.selected {
+  background: rgba(20,180,100,0.18);
+  border-color: #28d478;
+  box-shadow: 0 0 16px rgba(20,200,100,0.18);
+}
+.modal-cat-icon {
+  font-size: 26px; flex-shrink: 0;
+  width: 44px; height: 44px;
+  background: rgba(20,180,100,0.12);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid rgba(40,210,120,0.25);
+}
+.modal-cat-info { flex: 1; }
+.modal-cat-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 17px; font-weight: 800;
+  color: #5debb0;
+  letter-spacing: 0.3px;
+  line-height: 1.2;
+}
+.modal-cat-desc {
+  font-size: 12px; color: var(--muted);
+  font-weight: 600; margin-top: 2px;
+}
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 50%;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--muted); font-size: 16px;
+  transition: all 0.15s;
+}
+.modal-close:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+
+/* Aktif alt kategori göstergesi */
+.tarih-sub-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(20,180,100,0.1);
+  border: 1px solid rgba(40,210,120,0.3);
+  border-radius: 12px;
+  padding: 3px 10px;
+  font-size: 11px; font-weight: 700;
+  color: #5debb0;
+  margin-top: 5px;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.tarih-sub-badge:hover { background: rgba(20,180,100,0.2); }
 </style>
 </head>
 <body>
@@ -620,7 +734,7 @@ body {
   <button class="level-btn a active" id="btnA" onclick="setLevel('a')">⭐ A Seviyesi</button>
   <button class="level-btn b1" id="btnB1" onclick="setLevel('b1')">🔥 B Seviyesi</button>
   <button class="level-btn fiil" id="btnFiil" onclick="setLevel('fiil')">⚡ Fiiller</button>
-  <button class="level-btn tarih" id="btnTarih" onclick="setLevel('tarih')">📅 Tarih</button>
+  <button class="level-btn tarih" id="btnTarih" onclick="tarihButonTiklandi()">📅 Tarihler</button>
   <button class="level-btn saat" id="btnSaat" onclick="setLevel('saat')">🕐 Saat</button>
   <button class="level-btn sayi" id="btnSayi" onclick="setLevel('sayi')">🔢 Sayılar</button>
 </div>
@@ -658,6 +772,13 @@ body {
     </div>
     <div class="lvl-badge a" id="levelBadge">A Seviyesi</div>
   </div>
+  <div id="tarihSubRow" style="display:none; margin-bottom:12px;">
+    <span class="tarih-sub-badge" onclick="acTarihModal()">
+      <span id="tarihSubIcon">📆</span>
+      <span id="tarihSubLabel">Tarih Okuma</span>
+      <span style="opacity:0.5; font-size:10px; margin-left:2px;">▾</span>
+    </span>
+  </div>
 
   <div class="question-box" id="questionBox">
     <div class="question-label" id="questionLabel">Bu cümlenin Türkçesi nedir?</div>
@@ -670,6 +791,45 @@ body {
   <div class="bottom-row">
     <button class="pass-btn" onclick="pas()">⏭ Geç</button>
     <button class="toggle-btn" onclick="toggleDirection()">🔄 Yön Değiştir</button>
+  </div>
+</div>
+
+<!-- Tarih Alt Kategori Modal -->
+<div class="modal-overlay" id="tarihModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="kapatTarihModal()">✕</button>
+    <div class="modal-title">📅 Tarih Kategorileri</div>
+    <div class="modal-sub">Çalışmak istediğin konuyu seç</div>
+    <div class="modal-cats">
+      <button class="modal-cat-btn" id="catTarihOkuma" onclick="secTarihKat('tarihOkuma')">
+        <div class="modal-cat-icon">📆</div>
+        <div class="modal-cat-info">
+          <div class="modal-cat-name">Tarih Okuma</div>
+          <div class="modal-cat-desc">12.04.2025 → the twelfth of April… formatı</div>
+        </div>
+      </button>
+      <button class="modal-cat-btn" id="catAylar" onclick="secTarihKat('aylar')">
+        <div class="modal-cat-icon">🗓️</div>
+        <div class="modal-cat-info">
+          <div class="modal-cat-name">Aylar</div>
+          <div class="modal-cat-desc">January, February… ↔ Ocak, Şubat…</div>
+        </div>
+      </button>
+      <button class="modal-cat-btn" id="catGunler" onclick="secTarihKat('gunler')">
+        <div class="modal-cat-icon">📅</div>
+        <div class="modal-cat-info">
+          <div class="modal-cat-name">Günler</div>
+          <div class="modal-cat-desc">Monday, Tuesday… ↔ Pazartesi, Salı…</div>
+        </div>
+      </button>
+      <button class="modal-cat-btn" id="catMevsimler" onclick="secTarihKat('mevsimler')">
+        <div class="modal-cat-icon">🌸</div>
+        <div class="modal-cat-info">
+          <div class="modal-cat-name">Mevsimler</div>
+          <div class="modal-cat-desc">Spring, Summer, Autumn, Winter + cümleler</div>
+        </div>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -694,22 +854,64 @@ const QUIZ_LEVELS = {
   a:     { label: 'A Seviyesi',   badge: 'a',    dir: true  },
   b1:    { label: 'B Seviyesi',   badge: 'b1',   dir: true  },
   fiil:  { label: '⚡ Fiil Çekimi', badge: 'fiil', dir: false },
-  tarih: { label: '📅 Tarih',      badge: 'tarih',dir: false },
+  tarih: { label: '📅 Tarihler',   badge: 'tarih',dir: false },
   saat:  { label: '🕐 Saat',       badge: 'saat', dir: false },
   sayi:  { label: '🔢 Sayılar',    badge: 'sayi', dir: false },
+};
+
+const TARIH_KATS = {
+  tarihOkuma: { label: 'Tarih Okuma', icon: '📆' },
+  aylar:      { label: 'Aylar',       icon: '🗓️' },
+  gunler:     { label: 'Günler',      icon: '📅' },
+  mevsimler:  { label: 'Mevsimler',   icon: '🌸' },
 };
 
 function getPool() {
   if (activeLevel === 'a')     return typeof AseviyeCumleler  !== 'undefined' ? AseviyeCumleler  : [];
   if (activeLevel === 'b1')    return typeof BseviyeCumleler  !== 'undefined' ? BseviyeCumleler  : [];
   if (activeLevel === 'fiil')  return typeof FiilCekimleri    !== 'undefined' ? FiilCekimleri    : [];
-  if (activeLevel === 'tarih') return typeof TarihSorulari    !== 'undefined' ? TarihSorulari    : [];
+  if (activeLevel === 'tarih') return typeof getTarihPool     !== 'undefined' ? getTarihPool(aktivTarihKategori) : (typeof TarihSorulari !== 'undefined' ? TarihSorulari : []);
   if (activeLevel === 'saat')  return typeof SaatSorulari     !== 'undefined' ? SaatSorulari     : [];
   if (activeLevel === 'sayi')  return typeof SayiSorulari     !== 'undefined' ? SayiSorulari     : [];
   return [];
 }
 
-function setLevel(lvl) {
+// ── Tarih Modal ──
+function tarihButonTiklandi() {
+  if (activeLevel !== 'tarih') {
+    // İlk tıklamada: hem seviyeyi set et hem modalı aç
+    setLevel('tarih', true);
+  }
+  acTarihModal();
+}
+
+function acTarihModal() {
+  // Aktif kategori butonunu vurgula
+  document.querySelectorAll('.modal-cat-btn').forEach(b => b.classList.remove('selected'));
+  const aktifBtn = document.getElementById('cat' + aktivTarihKategori.charAt(0).toUpperCase() + aktivTarihKategori.slice(1));
+  if (aktifBtn) aktifBtn.classList.add('selected');
+  document.getElementById('tarihModal').classList.add('open');
+}
+
+function kapatTarihModal() {
+  document.getElementById('tarihModal').classList.remove('open');
+}
+
+function secTarihKat(kat) {
+  aktivTarihKategori = kat;
+  const cfg = TARIH_KATS[kat];
+  document.getElementById('tarihSubIcon').textContent = cfg.icon;
+  document.getElementById('tarihSubLabel').textContent = cfg.label;
+  kapatTarihModal();
+  yeniSoru();
+}
+
+// Modal dışına tıklayınca kapat
+document.getElementById('tarihModal').addEventListener('click', function(e) {
+  if (e.target === this) kapatTarihModal();
+});
+
+function setLevel(lvl, skipModal = false) {
   activeLevel = lvl;
   const allBtns = ['a','b1','fiil','tarih','saat','sayi'];
   allBtns.forEach(k => {
@@ -728,7 +930,11 @@ function setLevel(lvl) {
   if (lvl === 'b1') qbox.classList.add('level-b1');
 
   document.querySelector('.toggle-btn').style.display = cfg.dir ? '' : 'none';
-  yeniSoru();
+
+  // Tarih alt kategori badge satırını göster/gizle
+  document.getElementById('tarihSubRow').style.display = lvl === 'tarih' ? '' : 'none';
+
+  if (!skipModal) yeniSoru();
 }
 
 function getRandom(arr, count, exclude) {
