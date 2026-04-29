@@ -2,8 +2,8 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>İspan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ana Sayfa</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,42 +13,36 @@
     --surface: #13131a;
     --accent: #ff3c5f;
     --accent2: #ff8c42;
+    --blue: #4a7dff;
+    --blue2: #7aaeff;
     --text: #f0eee8;
     --muted: #666;
-  }
-
-  html, body {
-    height: 100%;
-    width: 100%;
-    overflow-x: hidden;
   }
 
   body {
     background: var(--bg);
     color: var(--text);
     font-family: 'Outfit', sans-serif;
-    min-height: 100dvh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
+    overflow-x: hidden;
+    padding: 2rem 1rem 5rem;
   }
 
-  /* Animated background */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
     background: 
-      radial-gradient(ellipse 80% 50% at 20% 20%, rgba(255,60,95,0.14) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 50% at 80% 80%, rgba(255,140,66,0.1) 0%, transparent 60%);
+      radial-gradient(ellipse 60% 50% at 20% 30%, rgba(255,60,95,0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 80% 70%, rgba(74,125,255,0.08) 0%, transparent 60%);
     pointer-events: none;
     z-index: 0;
   }
 
-  /* Noise texture */
   body::after {
     content: '';
     position: fixed;
@@ -63,295 +57,114 @@
     position: relative;
     z-index: 1;
     text-align: center;
-    padding: 2rem 1.5rem 6rem;
     width: 100%;
-    max-width: 480px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    max-width: 760px;
   }
 
   .logo {
     font-family: 'Bebas Neue', cursive;
-    font-size: clamp(5rem, 22vw, 8rem);
+    font-size: clamp(3.5rem, 10vw, 7rem);
     letter-spacing: 0.06em;
     line-height: 1;
-    background: linear-gradient(135deg, #ff3c5f 0%, #ff8c42 100%);
+    background: linear-gradient(135deg, #ff3c5f 0%, #ff8c42 60%, #4a7dff 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: fadeDown 0.7s ease both;
     margin-bottom: 0.3rem;
   }
 
   .tagline {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     color: var(--muted);
-    letter-spacing: 0.22em;
+    letter-spacing: 0.25em;
     text-transform: uppercase;
-    margin-bottom: 2.5rem;
-    animation: fadeDown 0.7s 0.12s ease both;
+    margin-bottom: 2.8rem;
   }
 
-  .nav-grid {
+  .lang-section {
+    margin-bottom: 2.2rem;
+  }
+
+  .section-header {
     display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-    width: 100%;
-    margin: 0 auto 2.5rem;
-    animation: fadeUp 0.7s 0.25s ease both;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0.9rem;
+    padding: 0 4px;
+  }
+
+  .section-label {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.5rem;
+    letter-spacing: 0.1em;
+  }
+
+  .section-label.es { color: #ff3c5f; }
+  .section-label.en { color: #4a7dff; }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+  }
+
+  .section-line.es { background: linear-gradient(90deg, rgba(255,60,95,0.5), transparent); }
+  .section-line.en { background: linear-gradient(90deg, rgba(74,125,255,0.5), transparent); }
+
+  .nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.9rem;
   }
 
   .nav-btn {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.1rem 1.4rem;
+    display: block;
+    padding: 1rem 1.2rem;
     background: var(--surface);
     border: 1px solid rgba(255,255,255,0.07);
     color: var(--text);
-    font-family: 'Outfit', sans-serif;
-    font-size: 1.05rem;
-    font-weight: 600;
     text-decoration: none;
-    letter-spacing: 0.04em;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.25s, transform 0.15s, background 0.25s;
-    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-  }
-
-  .nav-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255,60,95,0.15), rgba(255,140,66,0.1));
-    opacity: 0;
-    transition: opacity 0.25s;
-  }
-
-  .nav-btn .label-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.1rem;
-    flex: 1;
-  }
-
-  .nav-btn .page-tag {
-    font-size: 0.58rem;
-    color: var(--accent);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    opacity: 0.7;
-    font-weight: 400;
-  }
-
-  .nav-btn .arrow {
-    margin-left: auto;
-    color: var(--accent);
-    opacity: 0.5;
-    font-size: 1.1rem;
-    transition: opacity 0.2s, transform 0.2s;
-    flex-shrink: 0;
-  }
-
-  .nav-btn:active {
-    border-color: rgba(255,60,95,0.6);
-    transform: scale(0.98);
-    background: #1a1a24;
-  }
-
-  .nav-btn:active::before { opacity: 1; }
-  .nav-btn:active .arrow { opacity: 1; transform: translateX(4px); }
-
-  /* Touch ripple */
-  .nav-btn .ripple {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255,60,95,0.25);
-    transform: scale(0);
-    animation: ripple-anim 0.5s linear;
-    pointer-events: none;
-  }
-
-  @keyframes ripple-anim {
-    to { transform: scale(4); opacity: 0; }
-  }
-
-  .nav-btn .icon {
-    font-size: 1.5rem;
-    flex-shrink: 0;
-    filter: drop-shadow(0 0 6px rgba(255,60,95,0.3));
-  }
-
-  .divider {
-    width: 50px;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    margin: 0 auto 0;
-    animation: fadeUp 0.7s 0.4s ease both;
-  }
-
-  footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 10;
-    padding: 1rem 1.5rem calc(1rem + env(safe-area-inset-bottom));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(to top, rgba(10,10,15,1) 0%, rgba(10,10,15,0.85) 70%, transparent 100%);
-    animation: fadeUp 0.7s 0.5s ease both;
-  }
-
-  .contact-link {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    color: var(--muted);
-    text-decoration: none;
-    font-size: 0.8rem;
-    letter-spacing: 0.04em;
-    transition: color 0.25s;
-  }
-
-  .contact-link:active { color: var(--text); }
-
-  .mail-icon {
-    font-size: 1rem;
-    opacity: 0.7;
-  }
-
-  .contact-handle {
-    color: var(--accent);
     font-weight: 600;
+    transition: 0.3s;
   }
 
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-16px); }
-    to   { opacity: 1; transform: translateY(0); }
+  .nav-btn:hover {
+    transform: translateY(-3px);
   }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Floating particles */
-  .particle {
-    position: fixed;
-    border-radius: 50%;
-    pointer-events: none;
-    animation: float linear infinite;
-    opacity: 0.15;
-    z-index: 0;
-  }
-
-  @keyframes float {
-    from { transform: translateY(110vh) rotate(0deg); opacity: 0; }
-    10% { opacity: 0.15; }
-    90% { opacity: 0.15; }
-    to   { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-  }
-
-  /* Safe area for iPhone notch */
-  .container {
-    padding-top: max(2rem, env(safe-area-inset-top) + 1rem);
-  }
 </style>
 </head>
+
 <body>
 
-<script>
-  for (let i = 0; i < 10; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    const size = Math.random() * 5 + 2;
-    p.style.cssText = `
-      width:${size}px; height:${size}px;
-      left:${Math.random()*100}%;
-      background:${Math.random()>0.5?'#ff3c5f':'#ff8c42'};
-      animation-duration:${10+Math.random()*14}s;
-      animation-delay:${-Math.random()*18}s;
-    `;
-    document.body.appendChild(p);
-  }
-</script>
-
 <div class="container">
-  <div class="logo">İspan</div>
-  <p class="tagline">içerikler &bull; kelimeler &bull; cümleler</p>
+  <div class="logo">Dil Quiz</div>
+  <p class="tagline">kelimeler • cümleler • sayılar</p>
 
-  <div class="nav-grid">
-    <a href="yazı.html" class="nav-btn">
-      <span class="icon">✍️</span>
-      <span class="label-wrap">
-        <span>Yazı</span>
-        <span class="page-tag">sayfa</span>
-      </span>
-      <span class="arrow">›</span>
-    </a>
-  <div class="nav-grid">
-    <a href="sayilar.html" class="nav-btn">
-      <span class="icon">✍️</span>
-      <span class="label-wrap">
-        <span>Sayılar</span>
-        <span class="page-tag">sayfa</span>
-      </span>
-      <span class="arrow">›</span>
-    </a>
-    <a href="cümleşık.html" class="nav-btn">
-      <span class="icon">💬</span>
-      <span class="label-wrap">
-        <span>Cümle</span>
-        <span class="page-tag">sayfa</span>
-      </span>
-      <span class="arrow">›</span>
-    </a>
+  <!-- İspanyolca -->
+  <div class="lang-section">
+    <div class="section-header">
+      <span class="section-label es">🇪🇸 İspanyolca</span>
+      <div class="section-line es"></div>
+    </div>
 
-    <a href="ingilizce.html" class="nav-btn">
-      <span class="icon">🌍</span>
-      <span class="label-wrap">
-        <span>İngilizce</span>
-        <span class="page-tag">sayfa</span>
-      </span>
-      <span class="arrow">›</span>
-    </a>
+    <div class="nav-grid">
+      <a href="ispanyolca.html" class="nav-btn">İspanyolca</a>
+    </div>
   </div>
 
-  <div class="divider"></div>
+  <!-- İngilizce -->
+  <div class="lang-section">
+    <div class="section-header">
+      <span class="section-label en">🇬🇧 İngilizce</span>
+      <div class="section-line en"></div>
+    </div>
+
+    <div class="nav-grid">
+      <a href="ingilizce.html" class="nav-btn">İngilizce</a>
+    </div>
+  </div>
+
 </div>
-
-<footer>
-  <a href="mailto:kasikcimurat@icloud.com" class="contact-link">
-    <span class="mail-icon">✉️</span>
-    İletişim:&nbsp;<span class="contact-handle">kasikcimurat@icloud.com</span>
-  </a>
-</footer>
-
-<script>
-  // Touch ripple effect
-  document.querySelectorAll('.nav-btn').forEach(btn => {
-    btn.addEventListener('touchstart', function(e) {
-      const rect = btn.getBoundingClientRect();
-      const touch = e.touches[0];
-      const x = touch.clientX - rect.left;
-      const y = touch.clientY - rect.top;
-      const ripple = document.createElement('span');
-      ripple.className = 'ripple';
-      ripple.style.cssText = `left:${x}px; top:${y}px; width:${rect.width}px; height:${rect.width}px; margin-left:-${rect.width/2}px; margin-top:-${rect.width/2}px;`;
-      btn.appendChild(ripple);
-      setTimeout(() => ripple.remove(), 600);
-    }, { passive: true });
-  });
-</script>
 
 </body>
 </html>
-
