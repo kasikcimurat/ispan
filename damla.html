@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İyi ki Doğdun Damla! 🎉</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a0533 0%, #2d0a5e 40%, #1a1a4e 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: 'Georgia', serif;
+  }
+
+  #particles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .center {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  #main-text {
+    font-size: clamp(2.2rem, 6vw, 5rem);
+    font-weight: bold;
+    color: #fff;
+    opacity: 0;
+    transform: scale(0.5) translateY(40px);
+    transition: opacity 1.4s cubic-bezier(.22,1,.36,1), transform 1.4s cubic-bezier(.22,1,.36,1);
+    text-shadow: 0 0 40px #e040fb, 0 0 80px #e040fb88;
+    letter-spacing: 2px;
+    line-height: 1.2;
+    padding: 0 1rem;
+  }
+
+  #main-text.show {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+
+  #emoji-row {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1.2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+
+  #emoji-row.show { opacity: 1; }
+
+  .emoji-item {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    opacity: 0;
+    transform: translateY(60px) scale(0.3) rotate(-20deg);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(.34,1.56,.64,1);
+    filter: drop-shadow(0 0 12px #e040fb99);
+    display: inline-block;
+  }
+
+  .emoji-item.pop {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+
+  #youtube-btn {
+    margin-top: 2.5rem;
+    padding: 1rem 2.2rem;
+    background: linear-gradient(135deg, #e040fb, #7c4dff);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-family: Georgia, serif;
+    cursor: pointer;
+    box-shadow: 0 0 30px #e040fb66;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s, box-shadow 0.3s;
+    letter-spacing: 1px;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  #youtube-btn.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #youtube-btn:hover {
+    box-shadow: 0 0 50px #e040fbbb;
+    transform: scale(1.05);
+  }
+
+  .floating-heart {
+    position: fixed;
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0;
+    font-size: 1.8rem;
+    animation: floatUp 4s ease-in forwards;
+  }
+
+  @keyframes floatUp {
+    0%   { opacity: 0; transform: translateY(0) scale(0.5) rotate(0deg); }
+    15%  { opacity: 1; }
+    80%  { opacity: 0.7; }
+    100% { opacity: 0; transform: translateY(-80vh) scale(1.2) rotate(30deg); }
+  }
+
+  .star-burst {
+    position: fixed;
+    pointer-events: none;
+    z-index: 4;
+    opacity: 0;
+    font-size: 1.3rem;
+    animation: burst 2s ease-out forwards;
+  }
+
+  @keyframes burst {
+    0%   { opacity: 1; transform: scale(0.3); }
+    50%  { opacity: 1; transform: scale(1.5); }
+    100% { opacity: 0; transform: scale(0.8); }
+  }
+
+  canvas#confetti {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 3;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti"></canvas>
+
+<div class="center">
+  <div id="main-text">🎂 İYİ Kİ DOĞDUN DAMLA :3 🎂</div>
+  <div id="emoji-row">
+    <span class="emoji-item">💝</span>
+    <span class="emoji-item">🎁</span>
+    <span class="emoji-item">💜</span>
+    <span class="emoji-item">🎀</span>
+    <span class="emoji-item">💖</span>
+    <span class="emoji-item">🎊</span>
+    <span class="emoji-item">✨</span>
+    <span class="emoji-item">🎈</span>
+    <span class="emoji-item">💗</span>
+  </div>
+  <a id="youtube-btn" href="https://www.youtube.com/watch?v=CqOzAXbLyDo&list=RDCqOzAXbLyDo&start_radio=1" target="_blank">
+    🎵 TIKLA CNMMMM 🎵
+  </a>
+</div>
+
+<script>
+const emojis = ['💝','💖','💗','💓','💘','💞','💕','🎁','🎀','✨','🌟','💫','🎊','🎉'];
+
+function rnd(min, max) { return Math.random() * (max - min) + min; }
+
+function spawnFloater() {
+  const el = document.createElement('div');
+  el.className = 'floating-heart';
+  el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+  el.style.left = rnd(5, 90) + 'vw';
+  el.style.bottom = rnd(-5, 10) + 'vh';
+  el.style.fontSize = rnd(1.2, 2.8) + 'rem';
+  el.style.animationDuration = rnd(3.5, 6) + 's';
+  el.style.animationDelay = '0s';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 6500);
+}
+
+const canvas = document.getElementById('confetti');
+const ctx = canvas.getContext('2d');
+let pieces = [];
+const COLORS = ['#e040fb','#7c4dff','#ff80ab','#ffeb3b','#40c4ff','#69f0ae','#ff6d00','#fff'];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function launchConfetti() {
+  for (let i = 0; i < 160; i++) {
+    pieces.push({
+      x: rnd(0, canvas.width),
+      y: rnd(-20, -200),
+      w: rnd(6, 14),
+      h: rnd(10, 20),
+      color: COLORS[Math.floor(rnd(0, COLORS.length))],
+      vx: rnd(-3, 3),
+      vy: rnd(2, 7),
+      angle: rnd(0, Math.PI * 2),
+      va: rnd(-0.15, 0.15),
+      opacity: 1,
+      life: rnd(180, 320)
+    });
+  }
+}
+
+function drawConfetti() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  pieces = pieces.filter(p => p.life > 0);
+  for (const p of pieces) {
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.angle);
+    ctx.globalAlpha = Math.min(1, p.life / 60);
+    ctx.fillStyle = p.color;
+    ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+    ctx.restore();
+    p.x += p.vx;
+    p.y += p.vy;
+    p.angle += p.va;
+    p.vy += 0.07;
+    p.life--;
+  }
+  requestAnimationFrame(drawConfetti);
+}
+drawConfetti();
+
+function startShow() {
+  setTimeout(() => {
+    const text = document.getElementById('main-text');
+    text.classList.add('show');
+    launchConfetti();
+    setTimeout(launchConfetti, 600);
+  }, 400);
+
+  setTimeout(() => {
+    const row = document.getElementById('emoji-row');
+    row.classList.add('show');
+    const items = row.querySelectorAll('.emoji-item');
+    items.forEach((el, i) => {
+      setTimeout(() => el.classList.add('pop'), i * 130);
+    });
+  }, 1800);
+
+  setTimeout(() => {
+    document.getElementById('youtube-btn').classList.add('show');
+  }, 3000);
+
+  let floaterInterval;
+  setTimeout(() => {
+    spawnFloater();
+    floaterInterval = setInterval(spawnFloater, 600);
+    setTimeout(() => {
+      clearInterval(floaterInterval);
+      floaterInterval = setInterval(spawnFloater, 1400);
+    }, 6000);
+  }, 2200);
+
+  setTimeout(() => {
+    launchConfetti();
+    setTimeout(launchConfetti, 400);
+  }, 3500);
+}
+
+startShow();
+</script>
+</body>
+</html>
